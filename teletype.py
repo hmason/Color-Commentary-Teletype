@@ -24,7 +24,7 @@ TWITTER_PASSWORD = 's33s33teletype'
 SLEEP_INTERVAL = 1 # number of seconds to rest between items
 DEBUG = True # debuggy statements to stdout
 SNARK_FILE = 'snarkiness.txt' # one snark per line, please
-CHANCE_OF_SNARK = .9 # probability between 0 and 1
+CHANCE_OF_SNARK = .05 # probability between 0 and 1
 
 # code!
 class Teletype(object):
@@ -38,15 +38,7 @@ class Teletype(object):
             self.users = {}
         self.cache_file = cache_file
 
-        self.updates = api.mentions()
-
-        # for update in api.mentions():
-        #     if update.id not in self.seen:
-        #         if DEBUG:
-        #             print "Processing: %s, %s, %s" % (update.id, update.text, update.user.screen_name)
-        #             
-        #         self.seen.append(update.id)
-        #         self.users[update.user.screen_name] = self.users.get(update.user.screen_name, 0) + 1
+        self.updates = [m for m in api.mentions() if m.id not in self.seen]
 
     def next(self):
         try:      
@@ -132,11 +124,11 @@ if __name__ == '__main__':
                     update = random.choice(snarkiness)
 
             if update:        
-                print update
+                print update # TODO: print to teletype
                 (pos, neg) = s.analyze(update)
                 current_sentiment += delta(pos)
-                if DEBUG:
-                    print "Current sentiment: %s" % (current_sentiment)
+                if DEBUG: 
+                    print "Current sentiment: %s" % (current_sentiment) # TODO: print to seismograph
                             
             time.sleep(SLEEP_INTERVAL)
             
